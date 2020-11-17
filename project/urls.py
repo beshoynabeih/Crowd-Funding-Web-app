@@ -15,7 +15,8 @@ Including another URLconf
 """
 
 from django.urls import path
-
+from project import views
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('', views.index, name="home"),
+    path('createproject/', views.create_project, name="create_project")
 ]
