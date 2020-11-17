@@ -1,0 +1,64 @@
+{% extends 'project/base.html' %}
+
+{% block title %}
+Project {{ project.title }}
+{% endblock %}
+
+{% block header %}
+{% include 'project/include/header.html' %}
+{% endblock %}
+
+
+{% block content %}
+<div class="col-12">
+    <h2 class="">{{ project.title }}</h2>
+    <small class="text-muted">from {{ project.start_date }} to {{ project.end_date }} by <a href="#">{{ project.user.username }}</a></small>
+</div>
+<div class="col-8">
+
+    {% for tag in project.tags.all %}
+        <a class="badge badge-{% cycle 'primary' 'success' %} p-2" href="#">{{ tag.name }}</a>
+    {% endfor %}
+
+    <p>project category <a href="#">{{ project.category.title }}</a></p>
+    <p>total target: {{ project.total_target }}</p>
+    <h4>project details</h4>
+    <p>
+        {{project.details}}
+    </p>
+    
+    <div id="demo" class="carousel slide" data-ride="carousel">
+        <ul class="carousel-indicators">
+        {% for img in project.projectpicture_set.all %}
+          <li data-target="#demo" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.counter0 == 0 %}active {% endif %}"></li>
+        {% endfor %}
+        </ul>
+        <div class="carousel-inner">
+        {% for img in project.projectpicture_set.all %}
+          <div class="carousel-item {% if forloop.counter0 == 0 %}active {% endif %}">
+            <img src="{{ img.image.url }}" alt="{{ project.title }}">
+          </div>
+        {% endfor %}
+ 
+        </div>
+        <a class="carousel-control-prev" href="#demo" data-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a class="carousel-control-next" href="#demo" data-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </a>
+      </div>
+</div>
+<div class="col-4">
+<div>
+    <h3>Fund for this project</h3>
+    <form class="form" action="">
+        <div class="form-group">
+            <input class="form-control" placeholder="amount" type="number" step="0.01" name="amount">
+        </div>
+        <input type="submit" class="btn btn-success btn-block">
+
+    </form>
+</div>
+</div>
+{% endblock %}

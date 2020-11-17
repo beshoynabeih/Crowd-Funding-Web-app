@@ -1,9 +1,58 @@
-from django.shortcuts import render
-
+from django.shortcuts import render,redirect, get_object_or_404
+from django.views.generic import CreateView, UpdateView, ListView, DetailView
+from .models import Project, ProjectPicture, Category
+from .forms import ProjectForm
+from django.contrib import messages
+from django.contrib.auth.models import User
 # Create your views here.
 
 def index(request):
-    return render(request, 'project/index.html', {})
+    categories = Category.objects.all()
+    context = {
+        "categories": categories
+    }
+    return render(request, 'project/index.html', context)
+
 
 def create_project(request):
-    return render(request, 'project/addproject.html',{})
+    categories = Category.objects.all()
+    context = {
+        "categories": categories
+    }
+    form = ProjectForm()
+    if request.method == "POST":
+        form = ProjectForm(request.POST, request.FILES)
+        if form.is_valid():
+            project = form.save(commit=False)
+            project.user = User.objects.first()
+            project.save()
+            for image in request.FILES.getlist('images'):
+                ProjectPicture.objects.create(project=project, image=image)
+            messages.success(request, 'project has been created')
+            return redirect('home')
+        return render(request, 'project/createproject.html', {"form": form, 'categories': categories})
+    return render(request, 'project/createproject.html', {"form": form, 'categories': categories})
+
+
+def project_detail(request, project_id):
+    categories = Category.objects.all()
+    project = get_object_or_404(Project, pk=project_id)
+    context = {
+        "categories": categories,
+        "project": project
+    }
+    return render(request, 'project/project_detail.html', context)
+# class ProjectCreateView(CreateView):
+#     model = Project
+#     template_name = 'project/createproject.html'    
+#     form_class = ProjectForm
+#     queryset = Project.objects.all()
+
+#     def form_valid(self, form):
+#         project = form.instance
+#         user = User.objects.first()
+#         project.user = user
+#         for image in self.request.FILES.getlist('images'):
+#             ProjectPicture.objects.create(project)
+#         return super(ProjectCreateView, self).form_valid(form)
+

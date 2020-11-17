@@ -18,5 +18,6 @@ from django.urls import path
 from project import views
 urlpatterns = [
     path('', views.index, name="home"),
-    path('createproject/', views.create_project, name="create_project")
+    path('createproject/', views.create_project, name="create_project"),
+    path('project/<int:project_id>', views.project_detail, name="project_detail")
 ]
