@@ -22,32 +22,70 @@ Project {{ project.title }}
 
     <p>project category <a href="#">{{ project.category.title }}</a></p>
     <p>total target: {{ project.total_target }}</p>
+    <div id="demo" class="carousel slide" data-ride="carousel">
+      <ul class="carousel-indicators">
+      {% for img in project.projectpicture_set.all %}
+        <li data-target="#demo" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.counter0 == 0 %}active {% endif %}"></li>
+      {% endfor %}
+      </ul>
+      <div class="carousel-inner">
+      {% for img in project.projectpicture_set.all %}
+        <div class="carousel-item {% if forloop.counter0 == 0 %}active {% endif %}">
+          <img src="{{ img.image.url }}" alt="{{ project.title }}">
+        </div>
+      {% endfor %}
+
+      </div>
+      <a class="carousel-control-prev" href="#demo" data-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </a>
+      <a class="carousel-control-next" href="#demo" data-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </a>
+    </div>
     <h4>project details</h4>
     <p>
         {{project.details}}
     </p>
     
-    <div id="demo" class="carousel slide" data-ride="carousel">
-        <ul class="carousel-indicators">
-        {% for img in project.projectpicture_set.all %}
-          <li data-target="#demo" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.counter0 == 0 %}active {% endif %}"></li>
-        {% endfor %}
-        </ul>
-        <div class="carousel-inner">
-        {% for img in project.projectpicture_set.all %}
-          <div class="carousel-item {% if forloop.counter0 == 0 %}active {% endif %}">
-            <img src="{{ img.image.url }}" alt="{{ project.title }}">
+    {# Commentes #}
+    {# make it dynamic #}
+    <hr>
+    <h3>Comments</h3>
+    <div class="media">
+      <img src="https://via.placeholder.com/65x65" class="mr-3" alt="...">
+      <div class="media-body">
+        <h5 class="mt-0">User name</h5>
+        <small class="text-muted d-block">5-1-2020 12:12 am</small>
+        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+    
+        <div class="media mt-3">
+          <a class="mr-3" href="#">
+            <img src="https://via.placeholder.com/65x65" class="mr-3" alt="...">
+          </a>
+          <div class="media-body">
+            <h5 class="mt-0">another user</h5>
+            <small class="text-muted d-block">5-1-2020 12:12 am</small>
+            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
           </div>
-        {% endfor %}
- 
         </div>
-        <a class="carousel-control-prev" href="#demo" data-slide="prev">
-          <span class="carousel-control-prev-icon"></span>
-        </a>
-        <a class="carousel-control-next" href="#demo" data-slide="next">
-          <span class="carousel-control-next-icon"></span>
-        </a>
       </div>
+    </div>
+    <p>Leave a comment</p>
+    <div class="media mt-3">
+      <a class="mr-3" href="#">
+        <img src="https://via.placeholder.com/65x65" class="mr-3" alt="...">
+      </a>
+      <div class="media-body">
+        <h5 class="mt-0">current user name</h5>
+        <form action="">
+          <textarea style="resize:none" name="comment" id="" class="w-100" rows="5"></textarea>
+          <button class="btn btn-primary">post</button>
+        </form>
+      </div>
+    </div>
+
+      
 </div>
 <div class="col-4">
 <div>
