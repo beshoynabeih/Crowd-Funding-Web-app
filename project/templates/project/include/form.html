@@ -22,7 +22,11 @@
             {% render_field field class="form-control is-valid" %}
         {%endif%}
     {%else%}
-        {% render_field field class="form-control" %}
+        {% if field.name == 'tags' %}
+            {% render_field field class="form-control" data-role="tagsinput" %}
+        {% else %}
+            {% render_field field class="form-control" %}
+        {% endif %}
     {%endif%}
 </div>
 

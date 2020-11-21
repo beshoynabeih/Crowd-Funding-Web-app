@@ -4,7 +4,11 @@ from .models import Project, ProjectPicture, Category
 from .forms import ProjectForm
 from django.contrib import messages
 from django.contrib.auth.models import User
+from taggit.models import Tag
+from django.template.defaultfilters import slugify
+
 # Create your views here.
+
 
 def index(request):
     categories = Category.objects.all()
@@ -25,7 +29,9 @@ def create_project(request):
         if form.is_valid():
             project = form.save(commit=False)
             project.user = User.objects.first()
+            project.slug = slugify(project.title)
             project.save()
+            form.save_m2m()
             for image in request.FILES.getlist('images'):
                 ProjectPicture.objects.create(project=project, image=image)
             messages.success(request, 'project has been created')

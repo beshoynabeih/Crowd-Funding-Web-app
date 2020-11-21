@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from taggit.managers import TaggableManager
 
 
 class Category(models.Model):
@@ -11,13 +12,6 @@ class Category(models.Model):
         return self.title
 
 
-class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-
-    def __str__(self):
-        return self.name
-
-
 class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=70)
@@ -26,7 +20,8 @@ class Project(models.Model):
     total_target = models.DecimalField(max_digits=10, decimal_places=2)
     start_date = models.DateField()
     end_date = models.DateField()
-    tags = models.ManyToManyField(Tag)
+    # tags = models.ManyToManyField(Tag)
+    tags = TaggableManager()
 
     def get_absolute_url(self):
         return reverse('home')
@@ -35,8 +30,7 @@ class Project(models.Model):
         constraints = [
             models.CheckConstraint(name='end_date_after_start_date', check=models.Q(end_date__gt=models.F('start_date')))
         ]
-    
-    
+
 
 class ProjectPicture(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -55,6 +49,7 @@ class Reply(models.Model):
     body = models.CharField(max_length=250)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
 
 class Denote(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -75,6 +70,7 @@ class Rate(models.Model):
     ])
     created_at = models.DateTimeField(auto_now_add=True)
 
+
 class FeatureProject(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -92,4 +88,3 @@ class CommentReport(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.CharField(max_length=250)
     created_at = models.DateTimeField(auto_now_add=True)
-

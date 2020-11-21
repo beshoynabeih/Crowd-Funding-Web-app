@@ -10,5 +10,5 @@ class ProjectForm(forms.ModelForm):
         fields = ['title', 'details', 'total_target', 'start_date', 'end_date', 'tags', 'category']
         widgets = {
             'start_date': DateInput(attrs={'type': 'date'}),
-            'end_date': DateInput(attrs={'type': 'date'}),
+            'end_date': DateInput(attrs={'type': 'date'})
         }
