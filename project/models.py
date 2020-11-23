@@ -88,3 +88,7 @@ class CommentReport(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.CharField(max_length=250)
     created_at = models.DateTimeField(auto_now_add=True)
+      #create user profie
+class UserProfile(models.Model):
+    user  = models.OneToOneField(User)
+    avatar= models.ImageField()

@@ -6,6 +6,10 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from taggit.models import Tag
 from django.template.defaultfilters import slugify
+from django.conf import settings
+from django.contrib.auth import login
+from django.core.mail import send_mail
+from django.shortcuts import redirect
 
 # Create your views here.
 
@@ -48,6 +52,29 @@ def project_detail(request, project_id):
         "project": project
     }
     return render(request, 'project/project_detail.html', context)
+    #send email
+    
+def signup(request, my_app=None):
+    if request.method=="post":
+      username=request.post["username"]
+      passward = request.post["passward"]
+      email = request.post["email"]
+      user = User.objects.create_user(
+             username=username,
+             password=passward,
+             email=email
+
+
+      )
+
+      login(request,user)
+      subject = 'welcome to GFG world'
+      message = f'Hi {user.username}, thank you for registering'
+      email_from = settings.EMAIL_HOST_USER
+      recipient_list = [user.email, ]
+      send_mail(subject, message, email_from, recipient_list)
+      return redirect("/dashboard/")
+      return render(request,"signup.html")
 # class ProjectCreateView(CreateView):
 #     model = Project
 #     template_name = 'project/createproject.html'    
