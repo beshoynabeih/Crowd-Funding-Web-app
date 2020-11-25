@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,redirect, get_object_or_404
 from django.views.generic import CreateView, UpdateView, ListView, DetailView
 from .models import Project, ProjectPicture, Category
@@ -18,6 +19,7 @@ def index(request):
     return render(request, 'project/index.html', context)
 
 
+@login_required
 def create_project(request):
     categories = Category.objects.all()
     context = {
@@ -29,6 +31,7 @@ def create_project(request):
         if form.is_valid():
             project = form.save(commit=False)
             project.user = User.objects.first()
+            # project.user = User.objects.first()
             project.slug = slugify(project.title)
             project.save()
             form.save_m2m()
