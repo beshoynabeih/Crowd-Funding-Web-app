@@ -39,7 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'project',
-    'widget_tweaks'
+    'widget_tweaks',
+    'taggit',
+    'accounts',
+    'django_countries'
 ]
 
 MIDDLEWARE = [
@@ -79,10 +82,10 @@ WSGI_APPLICATION = 'crowdfunding.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '',
+        'NAME': 'crowdfunding',
         'HOST': 'localhost',
-        'USER': '',
-        'PASSWORD':'',
+        'USER': 'postgres',
+        'PASSWORD':'Secret_123',
         'POST': '5432'
     }
 }
@@ -125,7 +128,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
 
+LOGIN_URL = 'login'
