@@ -165,7 +165,7 @@
 {% if messages %}
   {% for msg in messages %}
   <div class="toast" aria-live="polite" aria-atomic="true" data-delay="10000"
-    style="position: absolute; top: 100px; right: 10px;">
+    style="position: fixed; top: 100px; right: 10px;">
     <div class="toast-header">
       <strong class="mr-auto text-primary">{{msg.tags}}</strong>
       <small class="text-muted">5 mins ago</small>
@@ -182,6 +182,5 @@
   $(document).ready(function () {
     $('.toast').toast('show');
   })
-
 </script>
 {% endblock %}

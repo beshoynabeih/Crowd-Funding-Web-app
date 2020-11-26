@@ -16,8 +16,15 @@ Including another URLconf
 
 from django.urls import path
 from project import views
+
 urlpatterns = [
     path('', views.index, name="home"),
-    path('createproject/', views.create_project, name="create_project"),
-    path('project/<int:project_id>', views.project_detail, name="project_detail")
+    path('create_project/', views.create_project, name="create_project"),
+    path('project/<int:project_id>', views.project_detail, name="project_detail"),
+    path('project/report/', views.project_report, name='project_report'),
+    path('comment_report/<int:comment_id>', views.comment_report, name='project_report_comment'),
+    path('project/<int:project_id>/post_comment', views.post_comment, name="post_comment"),
+    path('project/<int:project_id>/fund', views.fund_project, name="project_fund")
 ]
+
+

@@ -10,13 +10,13 @@ from django.forms import DateInput
 
 
 class SignUpForm(UserCreationForm):
-    email=forms.EmailField()
-    phone =  forms.RegexField(label='Phone', regex=r'^\+?1?\d{9,15}$')
+    email = forms.EmailField()
+    phone = forms.RegexField(label='Phone', regex=r'^\+?1?\d{9,15}$')
     img = forms.ImageField(label='Profile image', required=False,)
 
     class Meta:
         model = User
-        fields = {'username', 'password1', 'password2' , 'first_name', 'last_name', 'email', 'phone', 'img'}
+        fields = ['username', 'first_name', 'last_name',   'email','password1', 'password2',  'phone', 'img']
 
 
 class UserForm(forms.ModelForm):
