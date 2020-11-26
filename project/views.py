@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render,redirect, get_object_or_404
 from django.views.generic import CreateView, UpdateView, ListView, DetailView
-from .models import Project, ProjectPicture, Category
+from .models import Project, ProjectPicture, Category , Rate
 from .forms import ProjectForm
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -92,3 +93,27 @@ def signup(request, my_app=None):
 #             ProjectPicture.objects.create(project)
 #         return super(ProjectCreateView, self).form_valid(form)
 
+def rating_project(request,project_id,rating_val):
+    user=get_object_or_404(User,pk=request.user.id)
+    project=get_object_or_404(Project,pk=project_id)
+
+    try:
+        # if user update his rating 
+        rating=Rate.objects.get(user=user,project=project)
+        rating.rating=rating_val
+        rating.save()
+        message={
+            'status':'update rating',
+            'number_of_rating':project.number_of_rating()
+            }
+    except:
+        # user make first rating on this project
+        rating=Rate(user=user , project=project, rating=rating_val)
+        rating.save()
+        message={
+            'status':'new rating',
+            'number_of_rating':project.number_of_rating(),
+            }
+    
+    return JsonResponse(message)
+    

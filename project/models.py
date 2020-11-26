@@ -20,11 +20,36 @@ class Project(models.Model):
     total_target = models.DecimalField(max_digits=10, decimal_places=2)
     start_date = models.DateField()
     end_date = models.DateField()
-    # tags = models.ManyToManyField(Tag)
+    #tags = models.ManyToManyField(Tag)
     tags = TaggableManager()
+
+
+    #for get this tags from template as strings 
+    def get_tags(self):
+        tags=""
+        for tag in self.tags.all():
+            tags+=f'{tag},'
+        return tags
 
     def get_absolute_url(self):
         return reverse('home')
+    
+
+    # calc number of rating for project
+    def number_of_rating(self):
+        rating=Rate.objects.filter(project=self)
+        return len(rating)
+        
+    # calc average rating
+    def average_rating(self):
+        sum=0
+        rating=Rate.objects.filter(project=self)
+        for rate in rating:
+            sum+=rate.rating
+        if len(rating) > 0:
+            return sum / len(rating)
+        return 0
+
 
     class Meta:
         constraints = [
@@ -69,6 +94,11 @@ class Rate(models.Model):
         ('5', '5'),
     ])
     created_at = models.DateTimeField(auto_now_add=True)
+
+    # for unique (user and project) 
+    class Meta:
+        unique_together = (('user','project'),)
+        index_together = (('user','project'),)
 
 
 class FeatureProject(models.Model):

@@ -19,5 +19,6 @@ from project import views
 urlpatterns = [
     path('', views.index, name="home"),
     path('createproject/', views.create_project, name="create_project"),
-    path('project/<int:project_id>', views.project_detail, name="project_detail")
+    path('project/<int:project_id>', views.project_detail, name="project_detail"),
+    path('project_rate/<int:project_id>/<int:rating_val>', views.rating_project, name="rating_project")
 ]
