@@ -2,3 +2,5 @@
 __pycache__/
 crowdfunding/settings.py
 media/
+.env
+*/migrations/__pycache__/

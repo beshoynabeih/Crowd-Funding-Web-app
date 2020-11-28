@@ -97,8 +97,8 @@ class Rate(models.Model):
 
     # for unique (user and project) 
     class Meta:
-        unique_together = (('user','project'),)
-        index_together = (('user','project'),)
+        unique_together = (('user', 'project'),)
+        index_together = (('user', 'project'),)
 
 
 class FeatureProject(models.Model):

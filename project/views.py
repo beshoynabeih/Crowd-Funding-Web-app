@@ -107,25 +107,25 @@ def fund_project(request, project_id):
 
 
 def rating_project(request, project_id, rating_val):
-    user = get_object_or_404(User, pk=request.user.id)
-    project = get_object_or_404(Project, pk=project_id)
+    # user = get_object_or_404(User, pk=request.user.id)
+    # project = get_object_or_404(Project, pk=project_id)
 
     try:
         # if user update his rating 
-        rating = Rate.objects.get(user=user, project=project)
+        rating = Rate.objects.get(user=request.user, project_id=project_id)
         rating.rating = rating_val
         rating.save()
         message = {
             'status': 'update rating',
-            'number_of_rating': project.number_of_rating()
+            'number_of_rating': rating.project.number_of_rating()
             }
     except:
         # user make first rating on this project
-        rating = Rate(user=user , project=project, rating=rating_val)
+        rating = Rate(user=request.user, project_id=project_id, rating=rating_val)
         rating.save()
         message = {
             'status': 'new rating',
-            'number_of_rating': project.number_of_rating(),
+            'number_of_rating': rating.project.number_of_rating(),
             }
     
     return JsonResponse(message)
