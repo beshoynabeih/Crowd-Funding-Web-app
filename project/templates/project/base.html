@@ -18,6 +18,8 @@
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'project/css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'project/css/tagsinput.css' %}">
+    <script type="text/javascript" src="{% static 'userprofile/js/javascript.js' %}"></script>
+   
 
 
 
@@ -29,11 +31,16 @@
 {% include 'project/include/header.html' %}
 {% endblock %}
 <div class="container">
-    <div class="row my-5">
-        {% block content %}
-            this is block
-        {% endblock %}
-    </div>
+    
+    {% block content %}
+        <div class="row my-5">
+        
+                this is block
+        
+        </div>
+    {% endblock %}
+        
+   
 </div>
 
 {% include 'project/include/footer.html' %}

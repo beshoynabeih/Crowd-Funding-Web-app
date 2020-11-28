@@ -44,7 +44,26 @@ Project {{ project.title }}
         <span class="carousel-control-next-icon"></span>
       </a>
     </div>
-    <h4>project details</h4>
+
+    <!-- make rate -->
+    <div class="row mt-3">
+      <div class="col-4">
+        <h4>project details</h4>
+      </div>
+      <div class="col-6">
+        <!--just make it to handle average_rating from project to js file -->
+        <span id="average_rating" onclick="get_average_rating('{{ project.average_rating }}' , '{{ project.number_of_rating }}')"></span>
+        <div id="review" class="text-center mx-2"></div>
+        
+       </div>
+       <div class="col-2 mt-2">
+        <span style="font-weight: bold;font-size: larger;">(</span>
+        <span id="rating_num_value" style="font-weight: bold;font-size: larger;"></span>
+        <span style="font-weight: bold;font-size: larger;">)</span>
+       </div>
+      
+    </div>
+    <!--   -->
     <p>
         {{project.details}}
     </p>

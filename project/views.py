@@ -1,9 +1,16 @@
 from django.contrib.auth.decorators import login_required
+
 from django.db.models import Sum
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, UpdateView, ListView, DetailView
 from .models import Project, ProjectPicture, Category, ProjectReport, Comment, CommentReport, Denote
+
+from django.http import JsonResponse
+from django.shortcuts import render,redirect, get_object_or_404
+from django.views.generic import CreateView, UpdateView, ListView, DetailView
+from .models import Project, ProjectPicture, Category , Rate
+
 from .forms import ProjectForm
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -99,23 +106,26 @@ def fund_project(request, project_id):
                 return redirect('project_detail', project_id)
 
 
-def signup(request, my_app=None):
-    if request.method=="post":
-      username=request.post["username"]
-      passward = request.post["passward"]
-      email = request.post["email"]
-      user = User.objects.create_user(
-             username=username,
-             password=passward,
-             email=email
-      )
+def rating_project(request, project_id, rating_val):
+    user = get_object_or_404(User, pk=request.user.id)
+    project = get_object_or_404(Project, pk=project_id)
 
-      login(request,user)
-      subject = 'welcome to GFG world'
-      message = f'Hi {user.username}, thank you for registering'
-      email_from = settings.EMAIL_HOST_USER
-      recipient_list = [user.email, ]
-      send_mail(subject, message, email_from, recipient_list)
-      return redirect("/dashboard/")
-      return render(request,"signup.html")
-
+    try:
+        # if user update his rating 
+        rating = Rate.objects.get(user=user, project=project)
+        rating.rating = rating_val
+        rating.save()
+        message = {
+            'status': 'update rating',
+            'number_of_rating': project.number_of_rating()
+            }
+    except:
+        # user make first rating on this project
+        rating = Rate(user=user , project=project, rating=rating_val)
+        rating.save()
+        message = {
+            'status': 'new rating',
+            'number_of_rating': project.number_of_rating(),
+            }
+    
+    return JsonResponse(message)
