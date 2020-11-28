@@ -43,7 +43,7 @@ def create_project(request):
         form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
             project = form.save(commit=False)
-            project.user = User.objects.first()
+            project.user = request.user
             # project.user = User.objects.first()
             project.slug = slugify(project.title)
             project.save()

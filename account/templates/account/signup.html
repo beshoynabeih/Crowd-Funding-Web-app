@@ -6,7 +6,7 @@
         <div class="card">
           <div class="card-body">
             <h3 class="card-title">Sign up</h3>
-            <form method="POST" novalidate>
+            <form method="POST" enctype="multipart/form-data" novalidate>
               {% csrf_token %}
               {% include 'account/includes/form.html'%}
               <button type="submit" class="btn btn-primary btn-block">Create an account</button>            </form>

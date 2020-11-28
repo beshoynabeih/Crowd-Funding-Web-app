@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
-from .forms import  UserProfile, DenoteForm
-from project.models import Project, Denote
+from .forms import UserProfile, DenoteForm, UserForm
+from project.models import Project, Denote, Category, ProjectPicture
 from project.forms import ProjectForm
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404, Http404
 from django.core.mail import send_mail
@@ -21,7 +21,7 @@ def home(request):
 def signup(request):
     form = UserProfile()
     if request.method == 'POST':
-        form = UserProfile(request.POST)
+        form = UserProfile(request.POST, request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
@@ -57,14 +57,14 @@ class ActiveAccountView(View):
         return redirect('home')
 
 
-
 message = {}
 
 
-def profile(request, user_id):
-    user = get_object_or_404(User, pk=user_id)
+def profile(request):
+    user = get_object_or_404(MyUser, pk=request.user.id)
     projects = Project.objects.filter(user=user)
     donations = Denote.objects.filter(user=user)
+    category= Category.objects.all()
     projectform = ProjectForm()
     donationform = DenoteForm()
     userform = UserForm()
@@ -73,19 +73,19 @@ def profile(request, user_id):
         'user': user,
         'projects': projects,
         'donations': donations,
+        'category':category,
         'projectform': projectform,
         'donationform': donationform,
         'userform': userform,
         'message': message
     }
 
-    return render(request, 'profile.html', context)
+    return render(request, 'account/profile.html', context)
 
 
-def update_user_information(request, user_id):
+def update_user_information(request):
     global message
-    print("update user information")
-    user = get_object_or_404(User, pk=user_id)
+    user = get_object_or_404(User, pk=request.user.id)
     if request.method == 'POST':
         form = UserForm(request.POST)
         # remove constrains on username fields
@@ -102,48 +102,47 @@ def update_user_information(request, user_id):
         else:
             message = {'status': 'alert-danger', 'message': 'Update Failure'}
 
-    return redirect('profile_page', user_id=user_id)
+    return redirect('profile_page')
 
 
-# not logic using POST , GET in Update and delete (Html 5 -- problem) can solve by using ajax request later
-def update_project(request, user_id, project_id):
+def update_project(request, project_id):
     global message
-    print("update project")
-    print(user_id)
-    print(project_id)
     project = get_object_or_404(Project, pk=project_id)
-    user = get_object_or_404(User, pk=user_id)
     form = ProjectForm()
-
     if request.method == 'POST':
-        form = ProjectForm(request.POST)
+        form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
             project.title = form.cleaned_data.get('title')
             project.details = form.cleaned_data.get('details')
             project.total_target = form.cleaned_data.get('total_target')
             project.start_date = form.cleaned_data.get('start_date')
             project.end_date = form.cleaned_data.get('end_date')
-            # project.category=form.cleaned_data.get('category')
+            # get category object then update
+            project.category=Category.objects.filter(title=form.cleaned_data.get('category')).first()
+            # if uplade new image , clear old images
+            if request.FILES.getlist('images'):
+                ProjectPicture.objects.filter(project=project).delete()
+            # store new image
+            for image in request.FILES.getlist('images'):
+                ProjectPicture.objects.create(project=project, image=image)
             project.save()
             message = {'status': "alert-success", 'message': "Update Successfully"}
         else:
             print("form error")
             message = {'status': 'alert-danger', 'message': 'Update Failure'}
 
-    return redirect('profile_page', user_id=user_id)
+    return redirect('profile_page')
 
 
-def delete_project(request, user_id, project_id):
-    print("delete projet")
+def delete_project(request,project_id):
     global message
     if request.method == 'POST':
         Project.objects.filter(pk=project_id)[0].delete()
         message = {'status': "alert-success", 'message': "Delete Successfully"}
-    return redirect('profile_page', user_id=user_id)
+    return redirect('profile_page')
 
 
-def update_donation(request, user_id, donation_id):
-    print("update_donation")
+def update_donation(request,donation_id):
     global message
     donation = get_object_or_404(Denote, pk=donation_id)
     if request.method == "POST":
@@ -156,22 +155,19 @@ def update_donation(request, user_id, donation_id):
         else:
             message = {'status': 'alert-danger', 'message': 'Update Failure'}
 
-    return redirect('profile_page', user_id=user_id)
+    return redirect('profile_page')
 
 
-def delete_donation(request, user_id, donation_id):
-    print(" delete_donation")
+def delete_donation(request, donation_id):
     global message
     if request.method == "POST":
         Denote.objects.filter(pk=donation_id)[0].delete()
         message = {'status': "alert-success", 'message': "Delete Successfully"}
-    return redirect('profile_page', user_id=user_id)
+    return redirect('profile_page')
 
 
-def delete_account(request, user_id):
-    print("delete account")
-    print(user_id)
+def delete_account(request):
     # check user password then logout then delete user
     if request.method == "POST":
-        User.objects.filter(pk=user_id)[0].delete()
+        User.objects.filter(pk=request.user.id)[0].delete()
     return HttpResponse("<h1> go to home page <h1>")

@@ -58,7 +58,7 @@ class MyUser(AbstractBaseUser):
     phone_regex=RegexValidator(regex=r'^(01)[0-9]{9}',
                                message="Phone number must be entered in the format: '01099999999'. Up to 11 digits allowed.")
     phone=models.CharField(validators=[phone_regex],max_length=11,blank=True)
-    avatar=models.ImageField(upload_to='avatars/',blank=True)
+    avatar=models.ImageField(upload_to='avatars/', blank=False)
     date_of_birth=models.DateField(blank=True)
 
     avatar = models.ImageField(upload_to='avatars/', blank=True)

@@ -50,6 +50,23 @@ class ProjectForm(forms.ModelForm):
         }
 
 
+class UserForm(forms.ModelForm):
+    # birthdate=forms.DateField()
+    birthdate = forms.CharField()
+    facebook_profile = forms.URLField(max_length=150)
+    phone = forms.CharField(max_length=11)
+    country = forms.ChoiceField(choices=sorted(COUNTRIES.items()))
+
+    class Meta:
+        model = MyUser
+        fields = ['email', 'first_name', 'last_name', 'phone',
+                  'birthdate', 'country', 'facebook_profile']
+        widgets = {
+            'country': CountrySelectWidget(),
+            # 'birthdate': DateInput(attrs={'type': 'date'}),
+        }
+
+
 class DenoteForm(forms.ModelForm):
     class Meta:
         model = Denote
