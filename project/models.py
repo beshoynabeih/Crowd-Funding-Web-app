@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from account.models import MyUser
 from django.urls import reverse
 from taggit.managers import TaggableManager
 
@@ -13,7 +13,7 @@ class Category(models.Model):
 
 
 class Project(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     title = models.CharField(max_length=70)
     details = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -63,14 +63,14 @@ class ProjectPicture(models.Model):
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     body = models.CharField(max_length=250)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Reply(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     body = models.CharField(max_length=250)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -78,14 +78,14 @@ class Reply(models.Model):
 
 class Denote(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     amount = models.DecimalField(decimal_places=2, max_digits=10)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Rate(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     rating = models.IntegerField(choices=[
         ('1', '1'),
         ('2', '2'),
@@ -108,14 +108,14 @@ class FeatureProject(models.Model):
 
 class ProjectReport(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     body = models.CharField(max_length=250)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class CommentReport(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     body = models.CharField(max_length=250)
     created_at = models.DateTimeField(auto_now_add=True)
 

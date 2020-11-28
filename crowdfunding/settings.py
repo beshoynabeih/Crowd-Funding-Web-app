@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'project',
     'widget_tweaks',
     'taggit',
-    'accounts',
+    'account',
     'django_countries'
 ]
 
@@ -137,3 +137,4 @@ LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 
 LOGIN_URL = 'login'
+AUTH_USER_MODEL = 'account.MyUser'
