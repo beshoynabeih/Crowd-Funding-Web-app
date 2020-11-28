@@ -4,3 +4,4 @@ crowdfunding/settings.py
 media/
 .env
 */migrations
+.idea/
