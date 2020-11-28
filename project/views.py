@@ -105,7 +105,7 @@ def fund_project(request, project_id):
                 messages.success(request, 'error submitting the fund')
                 return redirect('project_detail', project_id)
 
-
+@login_required
 def rating_project(request, project_id, rating_val):
     # user = get_object_or_404(User, pk=request.user.id)
     # project = get_object_or_404(Project, pk=project_id)
