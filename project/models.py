@@ -49,6 +49,12 @@ class Project(models.Model):
         if len(rating) > 0:
             return sum / len(rating)
         return 0
+    def donation_collect(self):
+        sum=0
+        donations=Denote.objects.filter(project=self)
+        for donation in donations:
+            sum+=donation.amount
+        return sum
 
 
     class Meta:
@@ -81,6 +87,9 @@ class Denote(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     amount = models.DecimalField(decimal_places=2, max_digits=10)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def get_photo(self):
+        return ProjectPicture.objects.filter(project=self.project)[0].image
 
 
 class Rate(models.Model):

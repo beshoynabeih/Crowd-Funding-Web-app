@@ -11,9 +11,9 @@
         {{ message.message }}
       </div>
     {% endblock %}
-    {% block username %}
-        <h1>{{ user.username }}</h1>
-    {% endblock %}
+    <!-- {% block username %}
+        <h1>{{ user.first_name }} {{user.last_name}}</h1>
+    {% endblock %} -->
 
 
 
@@ -21,8 +21,9 @@
 
         <div class="text-center">
             <img style="width:150px !important; height:150px !important" src="{{user.avatar.url}}" class="avatar rounded-circle img-thumbnail" alt="avatar">
-            <h6>Upload a different photo...</h6>
-            <input type="file" class="text-center center-block file-upload">
+            <!-- <h6>Change Photo</h6>
+             <input type="file" class="text-center center-block file-upload"> 
+            -->
         </div>
     </hr><br>
       <ul class="list-group">
@@ -53,16 +54,18 @@
               <div class="col-sm">
 
                 <div class="form-group my-2">
-                    {{ userform.username|add_label_class:"form-control-label" }}
-                    {% render_field userform.username class="form-control invalid" value=user.username %}
+                    <label class="form-control-label">Username:</label>
+                    <input type="text" class="form-control invalid" value="{{user.first_name}} {{user.last_name}}" disabled>
                 </div>
 
               </div>
 
               <div class="col-sm">
                 <div class="form-group my-2">
-                  {{ userform.email|add_label_class:"form-control-label" }}
-                  {% render_field userform.email class="form-control invalid" value=user.email  readonly=True %}
+                  <!-- {{ userform.email|add_label_class:"form-control-label" }}
+                  {% render_field userform.email class="form-control invalid" value=user.email  readonly=True %} -->
+                  <label class="form-control-label">Email Address:</label>
+                    <input type="text" class="form-control invalid" value="{{user.email}}" disabled>
                 </div>
               </div>
 
@@ -95,8 +98,8 @@
               </div>
               <div class="col-sm">
                   <div class="form-group my-2">
-                    {{ userform.birthdate|add_label_class:"form-control-label" }}
-                    {% render_field userform.birthdate class="form-control invalid" value=user.birthdate %}
+                    {{ userform.date_of_birth|add_label_class:"form-control-label" }}
+                    {% render_field userform.date_of_birth class="form-control invalid" value=user.date_of_birth %}
                   </div>
               </div>
             </div>
@@ -108,7 +111,7 @@
 
             <div class="form-group my-2">
               {{ userform.facebook_profile|add_label_class:"form-control-label" }}
-              {% render_field userform.facebook_profile class="form-control invalid" value=user.facebook_profile %}
+              {% render_field userform.facebook_profile class="form-control invalid" value=user.fb_account %}
             </div>
 
 
@@ -156,6 +159,7 @@
                 <h5 class="card-title">Project Details:</h5>
                 <p class="ml-3">{{ project.details }}</p>
                 <h5 class="card-title">Total Donation Target: {{project.total_target}} EGP</h5>
+                <h5 class="card-title">Donation Collected: {{project.donation_collect}} EGP</h5>
                 <span class="badge badge-success mx-2">Start Date: {{project.start_date}}</span>
                 <span class="badge badge-danger mx-2">End Date: {{project.end_date}}</span>
                 <span class="float-right mx-3">
@@ -331,7 +335,7 @@
       {% for donation in donations %}
 
       <div class="card my-4" style="width:auto;">
-        <img class="card-img-top" height="150px" src="https://via.placeholder.com/728x90.png?text=Visit+WhoIsHostingThis.com+Buyers+Guide" alt="Card image">
+        <img class="card-img-top" height="150px" src="{{ donation.get_photo.url }}" alt="Card image">
         <div class="card-body">
             <h5 class="card-title"> Project Title:</h5>
             <p class="ml-3">{{ donation.project.title }}</p>
@@ -449,11 +453,12 @@
                 <!-- Modal body -->
                 <div class="modal-body">
                   <h5>Enter Your Password</h5>
-                  <div class="form-group">
-                    <input type="password" class="form-control">
-                  </div>
+                  
                   <form method="POST" action="{% url 'delete_account' %}" novalidate>
                     {% csrf_token %}
+                      <div class="form-group">
+                        <input type="password" name="password" class="form-control">
+                      </div>
                     <div class="text-center my-2">
                         <button type="submit" class="btn btn-danger mx-3">Delete</button>
                         <button type="button" class="btn btn-success mx-3" data-dismiss="modal">Cancel</button>

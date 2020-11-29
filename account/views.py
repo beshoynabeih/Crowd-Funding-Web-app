@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
-from .forms import UserProfile, DenoteForm, UserForm
+from django.contrib.auth import logout
+from .forms import UserProfile, DenoteForm, UserProfile ,UserForm
 from project.models import Project, Denote, Category, ProjectPicture
 from project.forms import ProjectForm
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404, Http404
@@ -85,24 +86,41 @@ def profile(request):
 
 def update_user_information(request):
     global message
-    user = get_object_or_404(User, pk=request.user.id)
+    user = get_object_or_404(MyUser, pk=request.user.id)
     if request.method == 'POST':
         form = UserForm(request.POST)
         # remove constrains on username fields
         if form.is_valid():
-            user.username = form.cleaned_data.get('username')
+            print(form)
+            #user.username = form.cleaned_data.get('username')
             user.first_name = form.cleaned_data.get('first_name')
             user.last_name = form.cleaned_data.get('last_name')
-            # user.phone=form.cleaned_data.get('phone')
-            # user.birthdate=form.cleaned_data.get('birthdate')
-            # user.country=form.cleaned_data.get('country')
-            # user.facebook_profile=form.cleaned_data.get('facebook_profile')
+            user.phone=form.cleaned_data.get('phone')
+            user.date_of_birth=form.cleaned_data.get('date_of_birth')
+            user.country=form.cleaned_data.get('country')
+            user.fb_account=form.cleaned_data.get('facebook_profile')
             user.save()
             message = {'status': "alert-success", 'message': "Update Successfully"}
         else:
+            print(form)
             message = {'status': 'alert-danger', 'message': 'Update Failure'}
 
     return redirect('profile_page')
+
+
+# def update_user_avatar(request,user_id):
+#     user=get_object_or_404(MyUser,pk=user_id)
+#     if request.method == 'POST':
+#         if request.FILES.getlist('avatar')[0]:
+#             user.avatar=request.FILES.getlist('avatar')[0]
+#             message={'status':1}
+#             print(message)
+#             return JsonResponse(message)
+#         else:
+#             message={'status':0}
+#             print(message)
+#             return JsonResponse(message)
+
 
 
 def update_project(request, project_id):
@@ -136,9 +154,18 @@ def update_project(request, project_id):
 
 def delete_project(request,project_id):
     global message
+    project=Project.objects.filter(pk=project_id)[0]
     if request.method == 'POST':
-        Project.objects.filter(pk=project_id)[0].delete()
-        message = {'status': "alert-success", 'message': "Delete Successfully"}
+        donations=Denote.objects.filter(project=project_id)
+        total=0
+        for donation in donations:
+            total+=donation.amount
+        if total < (float(project.total_target) * 0.25):
+            project.delete()
+            message = {'status': "alert-success", 'message': "Delete Successfully"}
+        else:
+            message = {'status': "alert-danger", 'message': "Cant Delete This project"}
+
     return redirect('profile_page')
 
 
@@ -167,7 +194,13 @@ def delete_donation(request, donation_id):
 
 
 def delete_account(request):
-    # check user password then logout then delete user
     if request.method == "POST":
-        User.objects.filter(pk=request.user.id)[0].delete()
-    return HttpResponse("<h1> go to home page <h1>")
+        global message
+        user=MyUser.objects.get(pk=request.user.id)
+        if not user.check_password(request.POST['password']):
+            message = {'status': "alert-danger", 'message': "Cant Delete Account Password Not Correct "}
+            return redirect('profile_page')
+        else:
+            logout(request) #logout
+            user.delete()
+    return redirect('home')

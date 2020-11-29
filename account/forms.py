@@ -10,13 +10,11 @@ from django_countries.widgets import CountrySelectWidget
 from django.forms import DateInput
 
 
-
 # from django.contrib.auth.models import User
 from .models import MyUser
 
 class UserProfile(UserCreationForm):
     email = forms.EmailField(required=True)
-
     class Meta:
         model = MyUser
         fields = ('first_name', 'last_name', 'email', "password1", "password2", 'avatar', 'phone', 'date_of_birth')
@@ -52,15 +50,15 @@ class ProjectForm(forms.ModelForm):
 
 class UserForm(forms.ModelForm):
     # birthdate=forms.DateField()
-    birthdate = forms.CharField()
+    date_of_birth = forms.CharField()
     facebook_profile = forms.URLField(max_length=150)
     phone = forms.CharField(max_length=11)
     country = forms.ChoiceField(choices=sorted(COUNTRIES.items()))
 
     class Meta:
         model = MyUser
-        fields = ['email', 'first_name', 'last_name', 'phone',
-                  'birthdate', 'country', 'facebook_profile']
+        fields = ['first_name', 'last_name', 'phone',
+                  'date_of_birth', 'country', 'facebook_profile']
         widgets = {
             'country': CountrySelectWidget(),
             # 'birthdate': DateInput(attrs={'type': 'date'}),
