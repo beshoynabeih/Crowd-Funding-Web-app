@@ -88,7 +88,9 @@ class Denote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def get_photo(self):
-        return ProjectPicture.objects.filter(project=self.project)[0].image
+        if ProjectPicture.objects.filter(project=self.project):
+            return ProjectPicture.objects.filter(project=self.project).first().image
+        return False
 
 
 class Rate(models.Model):

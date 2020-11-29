@@ -65,11 +65,11 @@ def profile(request):
     user = get_object_or_404(MyUser, pk=request.user.id)
     projects = Project.objects.filter(user=user)
     donations = Denote.objects.filter(user=user)
-    category= Category.objects.all()
+    category = Category.objects.all()
     projectform = ProjectForm()
     donationform = DenoteForm()
     userform = UserForm()
-    print(message)
+
     context = {
         'user': user,
         'projects': projects,
@@ -80,7 +80,8 @@ def profile(request):
         'userform': userform,
         'message': message
     }
-
+    # print(context)
+    # return HttpResponse("asdasd")
     return render(request, 'account/profile.html', context)
 
 
@@ -91,18 +92,15 @@ def update_user_information(request):
         form = UserForm(request.POST)
         # remove constrains on username fields
         if form.is_valid():
-            print(form)
-            #user.username = form.cleaned_data.get('username')
             user.first_name = form.cleaned_data.get('first_name')
             user.last_name = form.cleaned_data.get('last_name')
-            user.phone=form.cleaned_data.get('phone')
-            user.date_of_birth=form.cleaned_data.get('date_of_birth')
-            user.country=form.cleaned_data.get('country')
+            user.phone = form.cleaned_data.get('phone')
+            user.date_of_birth = form.cleaned_data.get('date_of_birth')
+            user.country = form.cleaned_data.get('country')
             user.fb_account=form.cleaned_data.get('facebook_profile')
             user.save()
             message = {'status': "alert-success", 'message': "Update Successfully"}
         else:
-            print(form)
             message = {'status': 'alert-danger', 'message': 'Update Failure'}
 
     return redirect('profile_page')

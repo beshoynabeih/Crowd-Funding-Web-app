@@ -83,7 +83,7 @@ def comment_report(request, comment_id):
         return JsonResponse({"return": True})
     return JsonResponse({"return": False})
 
-
+@login_required
 def fund_project(request, project_id):
     if request.method == 'POST':
         if Project.objects.filter(pk=project_id).exists():

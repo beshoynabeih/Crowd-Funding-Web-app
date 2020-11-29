@@ -20,7 +20,12 @@
     {% block left_side %}
 
         <div class="text-center">
+            {% if user.avatar %}
             <img style="width:150px !important; height:150px !important" src="{{user.avatar.url}}" class="avatar rounded-circle img-thumbnail" alt="avatar">
+
+            {% else %}
+            <img style="width:150px !important; height:150px !important" src="https://w7.pngwing.com/pngs/613/636/png-transparent-computer-icons-user-profile-male-avatar-avatar-heroes-logo-black-thumbnail.png" class="avatar rounded-circle img-thumbnail" alt="avatar">
+            {% endif %}
             <!-- <h6>Change Photo</h6>
              <input type="file" class="text-center center-block file-upload"> 
             -->
@@ -54,7 +59,7 @@
               <div class="col-sm">
 
                 <div class="form-group my-2">
-                    <label class="form-control-label">Username:</label>
+                    <label class="form-control-label">Full Name:</label>
                     <input type="text" class="form-control invalid" value="{{user.first_name}} {{user.last_name}}" disabled>
                 </div>
 
@@ -335,7 +340,9 @@
       {% for donation in donations %}
 
       <div class="card my-4" style="width:auto;">
+          {% if donation.get_photo %}
         <img class="card-img-top" height="150px" src="{{ donation.get_photo.url }}" alt="Card image">
+          {% endif %}
         <div class="card-body">
             <h5 class="card-title"> Project Title:</h5>
             <p class="ml-3">{{ donation.project.title }}</p>

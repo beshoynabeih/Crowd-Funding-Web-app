@@ -11,7 +11,7 @@ $(function(){
 // });
 
 // get fro user object
-$('#id_country').val('EG')
+//$('#id_country').val('EG')
 
 
 // update avatar

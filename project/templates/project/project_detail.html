@@ -50,6 +50,7 @@ Project {{ project.title }}
       <div class="col-4">
         <h4>project details</h4>
       </div>
+        {% if user.authenticated %}
       <div class="col-6">
         <!--just make it to handle average_rating from project to js file -->
         <span id="average_rating" onclick="get_average_rating('{{ project.average_rating }}' , '{{ project.number_of_rating }}')"></span>
@@ -61,8 +62,9 @@ Project {{ project.title }}
         <span id="rating_num_value" style="font-weight: bold;font-size: larger;"></span>
         <span style="font-weight: bold;font-size: larger;">)</span>
        </div>
-      
+{% endif %}
     </div>
+
     <!--   -->
     <p>
         {{project.details}}

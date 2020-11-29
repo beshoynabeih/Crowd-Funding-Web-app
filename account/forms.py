@@ -13,11 +13,15 @@ from django.forms import DateInput
 # from django.contrib.auth.models import User
 from .models import MyUser
 
+
 class UserProfile(UserCreationForm):
     email = forms.EmailField(required=True)
     class Meta:
         model = MyUser
         fields = ('first_name', 'last_name', 'email', "password1", "password2", 'avatar', 'phone', 'date_of_birth')
+        widgets = {
+            'date_of_birth': DateInput(attrs={'type': 'date'})
+        }
 
     # def save(self, commit=True):
     #     user = super(UserCreationForm, self).save(commit=False)
@@ -49,10 +53,10 @@ class ProjectForm(forms.ModelForm):
 
 
 class UserForm(forms.ModelForm):
-    # birthdate=forms.DateField()
-    date_of_birth = forms.CharField()
-    facebook_profile = forms.URLField(max_length=150)
-    phone = forms.CharField(max_length=11)
+    # date_of_birth = forms.DateField(required=False)
+    # date_of_birth = forms.CharField()
+    facebook_profile = forms.URLField(max_length=150, required=False)
+    phone = forms.CharField(max_length=11, required=False)
     country = forms.ChoiceField(choices=sorted(COUNTRIES.items()))
 
     class Meta:
@@ -61,7 +65,7 @@ class UserForm(forms.ModelForm):
                   'date_of_birth', 'country', 'facebook_profile']
         widgets = {
             'country': CountrySelectWidget(),
-            # 'birthdate': DateInput(attrs={'type': 'date'}),
+            'date_of_birth': DateInput(attrs={'type': 'date'})
         }
 
 
