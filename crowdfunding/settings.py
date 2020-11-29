@@ -83,11 +83,17 @@ WSGI_APPLICATION = 'crowdfunding.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME'),
-        'HOST': os.environ.get('DB_HOST'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'POST': os.environ.get('DB_PORT')
+        # 'NAME': os.environ.get('DB_NAME'),
+        # 'HOST': os.environ.get('DB_HOST'),
+        # 'USER': os.environ.get('DB_USER'),
+        # 'PASSWORD': os.environ.get('DB_PASSWORD'),
+        # 'POST': os.environ.get('DB_PORT')
+
+        'NAME': 'Crowd-Funding3',
+        'HOST': 'localhost',
+        'USER': 'postgres',
+        'PASSWORD':'root',
+        'POST': '5432'
     }
 }
 
@@ -147,5 +153,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''

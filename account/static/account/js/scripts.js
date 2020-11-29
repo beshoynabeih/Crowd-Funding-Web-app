@@ -10,8 +10,20 @@ $(function(){
 
   $('input').blur(function(){
        element=$(this)
+
+       if(element.attr("name") == "phone")
+  {
+    console.log("phone validations")
+    let regExp=RegExp('^(010|012|011)[0-9]{9}')
+      if(!regExp.test($(this).val()))
+          ($(this).addClass("is-invalid"))
+      else
+      ($(this).removeClass("is-invalid"))
+  }
+    
     if(element.attr("type") == "text")
   {
+    console.log("text validations")
       if(!$(this).val())
           ($(this).addClass("is-invalid"))
       else
