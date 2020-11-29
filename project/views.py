@@ -25,19 +25,11 @@ from django.core.mail import send_mail
 
 
 def index(request):
-    categories = Category.objects.all()
-    context = {
-        "categories": categories
-    }
-    return render(request, 'project/index.html', context)
+    return render(request, 'project/index.html', {})
 
 
 @login_required
 def create_project(request):
-    categories = Category.objects.all()
-    context = {
-        "categories": categories
-    }
     form = ProjectForm()
     if request.method == "POST":
         form = ProjectForm(request.POST, request.FILES)
@@ -52,15 +44,13 @@ def create_project(request):
                 ProjectPicture.objects.create(project=project, image=image)
             messages.success(request, 'project has been created')
             return redirect('home')
-        return render(request, 'project/createproject.html', {"form": form, 'categories': categories})
-    return render(request, 'project/createproject.html', {"form": form, 'categories': categories})
+        return render(request, 'project/createproject.html', {"form": form})
+    return render(request, 'project/createproject.html', {"form": form})
 
 
 def project_detail(request, project_id):
-    categories = Category.objects.all()
     project = get_object_or_404(Project, pk=project_id)
     context = {
-        "categories": categories,
         "project": project,
         "project_target_collected": Denote.objects.filter(project=project).aggregate(Sum('amount'))['amount__sum'] or 0.0
     }

@@ -20,7 +20,6 @@ class Project(models.Model):
     total_target = models.DecimalField(max_digits=10, decimal_places=2)
     start_date = models.DateField()
     end_date = models.DateField()
-    #tags = models.ManyToManyField(Tag)
     tags = TaggableManager()
 
 

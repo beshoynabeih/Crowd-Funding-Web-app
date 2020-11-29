@@ -7,7 +7,14 @@ from django.core.files.images import get_image_dimensions
 
 class ProjectForm(forms.ModelForm):
     images = forms.ImageField(widget=forms.FileInput(attrs={'multiple': True}), required=False)
-    
+
+    def clean(self):
+        start_date = self.cleaned_data.get("start_date")
+        end_date = self.cleaned_data.get("end_date")
+        if end_date and start_date and end_date < start_date:
+            msg = u"End date should be greater than start date."
+            self._errors["end_date"] = self.error_class([msg])
+
     class Meta:
         model = Project
         fields = ['title', 'details', 'total_target', 'start_date', 'end_date', 'tags', 'category']

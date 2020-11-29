@@ -16,7 +16,7 @@ Create New Project
 <div class="col-8 my-3">
 
 
-<form action="" method="POST" enctype="multipart/form-data">
+<form novalidate method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
     {% include 'project/include/form.html' %}
