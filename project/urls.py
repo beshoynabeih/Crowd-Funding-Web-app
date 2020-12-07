@@ -28,8 +28,9 @@ urlpatterns = [
 
     path('create_project/', views.create_project, name="create_project"),
     path('project/<int:project_id>', views.project_detail, name="project_detail"),
-    path('project_rate/<int:project_id>/<int:rating_val>', views.rating_project, name="rating_project")
-
+    path('project_rate/<int:project_id>/<int:rating_val>', views.rating_project, name="rating_project"),
+    path('projects/', views.all_projects, name='projects'),
+    path('projects/category/<category_id>', views.projects_by_category, name='projects_by_category'),
 ]
 
 

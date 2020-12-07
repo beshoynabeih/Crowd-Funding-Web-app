@@ -7,9 +7,9 @@ from django.views.generic import CreateView, UpdateView, ListView, DetailView
 from .models import Project, ProjectPicture, Category, ProjectReport, Comment, CommentReport, Denote
 
 from django.http import JsonResponse
-from django.shortcuts import render,redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, UpdateView, ListView, DetailView
-from .models import Project, ProjectPicture, Category , Rate
+from .models import Project, ProjectPicture, Category, Rate
 
 from .forms import ProjectForm
 from django.contrib import messages
@@ -25,7 +25,13 @@ from django.core.mail import send_mail
 
 
 def index(request):
-    return render(request, 'project/index.html', {})
+    latest_projects = Project.objects.all().order_by('-start_date')[:5]
+    latest_featured_projects = Project.objects.filter(is_featured=True).order_by('-start_date')[:5]
+    context = {
+        'latest_projects': latest_projects,
+        'latest_featured_projects': latest_featured_projects
+    }
+    return render(request, 'project/index.html', context)
 
 
 @login_required
@@ -52,14 +58,16 @@ def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     context = {
         "project": project,
-        "project_target_collected": Denote.objects.filter(project=project).aggregate(Sum('amount'))['amount__sum'] or 0.0
+        "project_target_collected": Denote.objects.filter(project=project).aggregate(Sum('amount'))[
+                                        'amount__sum'] or 0.0
     }
     return render(request, 'project/project_detail.html', context)
 
 
 @login_required
 def project_report(request):
-    rec = ProjectReport.objects.create(user=request.user, body=request.GET.get('body'), project_id=request.GET.get('project'))
+    rec = ProjectReport.objects.create(user=request.user, body=request.GET.get('body'),
+                                       project_id=request.GET.get('project'))
     if rec:
         data = {'return': True}
     else:
@@ -71,7 +79,8 @@ def project_report(request):
 def post_comment(request, project_id):
     if request.method == "POST":
         if Project.objects.filter(pk=project_id).exists():
-            comment = Comment.objects.create(body=request.POST.get('comment-body'), user=request.user, project_id=project_id)
+            comment = Comment.objects.create(body=request.POST.get('comment-body'), user=request.user,
+                                             project_id=project_id)
             return redirect('project_detail', project_id)
     return redirect('project_detail', project_id)
 
@@ -83,17 +92,33 @@ def comment_report(request, comment_id):
         return JsonResponse({"return": True})
     return JsonResponse({"return": False})
 
+
 @login_required
 def fund_project(request, project_id):
     if request.method == 'POST':
         if Project.objects.filter(pk=project_id).exists():
-            rec = Denote.objects.create(user=request.user, project_id=project_id, amount=request.POST.get('amount'))
-            if rec:
-                messages.success(request, 'Your fund has been submitted')
+            project = Project.objects.get(pk=project_id)
+            if not request.POST.get('amount').isdigit():
+                messages.success(request, 'error submitting the fund, Invalid Money amount')
                 return redirect('project_detail', project_id)
+            if project.user.id == request.user.id:
+                messages.success(request, 'You can not fund your own project')
+                return redirect('project_detail', project_id)
+
+            project_funds = Denote.objects.filter(project_id=project_id).aggregate(Sum('amount'))['amount__sum'] or 0
+            if project_funds + int(request.POST.get('amount')) < project.total_target:
+                rec = Denote.objects.create(user=request.user, project_id=project_id, amount=request.POST.get('amount'))
+                if rec:
+                    messages.success(request, 'Your fund has been submitted')
+                    return redirect('project_detail', project_id)
+                else:
+                    messages.success(request, 'error submitting the fund')
+                    return redirect('project_detail', project_id)
             else:
-                messages.success(request, 'error submitting the fund')
+                messages.success(request,
+                                 'the project has been collected all total target or your amount is much for the project')
                 return redirect('project_detail', project_id)
+
 
 @login_required
 def rating_project(request, project_id, rating_val):
@@ -108,7 +133,7 @@ def rating_project(request, project_id, rating_val):
         message = {
             'status': 'update rating',
             'number_of_rating': rating.project.number_of_rating()
-            }
+        }
     except:
         # user make first rating on this project
         rating = Rate(user=request.user, project_id=project_id, rating=rating_val)
@@ -116,6 +141,16 @@ def rating_project(request, project_id, rating_val):
         message = {
             'status': 'new rating',
             'number_of_rating': rating.project.number_of_rating(),
-            }
-    
+        }
+
     return JsonResponse(message)
+
+
+def all_projects(request):
+    projects = Project.objects.all().order_by('-start_date')[:3]
+    return render(request, 'project/projects.html', {'projects': projects})
+
+
+def projects_by_category(request, category_id):
+    projects = Project.objects.filter(category_id=category_id)
+    return render(request, 'project/projects.html', {'projects': projects})

@@ -44,121 +44,51 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="text-center p-5">latest 5 projects</h1>
+
 <div class="row" style="justify-content: center;">
+  <div class="col-12">
+    <h1 class="text-center p-5">latest 5 projects</h1>
+  </div>
+  {% for project in latest_projects %}
   <div class="col-md-2  mr-3">
     <div class="card" style="width: 12rem;">
-      <img src="https://via.placeholder.com/140x100" class="card-img-top" alt="...">
+      {% if project.projectpicture_set.first %}
+      <img width="140" height="110" src="{{ project.projectpicture_set.first.image.url }}" class="card-img-top" alt="{{project.title}}">
+      {% else %}
+      <img width="140" height="110" src="https://via.placeholder.com/140x100" class="card-img-top" alt="{{project.title}}">
+      {% endif %}
       <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-          content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
+        <h5 class="card-title">{{project.title}}</h5>
+        <p class="card-text">{{ project.details|slice:":10" }}...</p>
+        <a href="{% url 'project_detail' project.id %}" class="btn btn-primary">more</a>
       </div>
     </div>
   </div>
-  <div class="col-md-2 mr-3">
-    <div class="card" style="width: 12rem;">
-      <img src="https://via.placeholder.com/140x100" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-          content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-2 mr-3">
-    <div class="card" style="width: 12rem;">
-      <img src="https://via.placeholder.com/140x100" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-          content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-2 mr-3">
-    <div class="card" style="width: 12rem;">
-      <img src="https://via.placeholder.com/140x100" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-          content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-2 mr-3">
-    <div class="card" style="width: 12rem;">
-      <img src="https://via.placeholder.com/140x100" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-          content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-  </div>
+  {% endfor %}
+
 </div>
-<h1 class="text-center p-5">latest 5 featured projects</h1>
+
 <div class="row" style="justify-content: center;">
+  <div class="col-12">
+    <h1 class="text-center p-5">latest 5 featured projects</h1>
+  </div>
+  {% for project in latest_featured_projects %}
   <div class="col-md-2  mr-3">
     <div class="card" style="width: 12rem;">
-      <img src="https://via.placeholder.com/140x100" class="card-img-top" alt="...">
+      {% if project.projectpicture_set.first %}
+      <img width="140" height="110" src="{{ project.projectpicture_set.first.image.url }}" class="card-img-top" alt="{{project.title}}">
+      {% else %}
+      <img width="140" height="110" src="https://via.placeholder.com/140x100" class="card-img-top" alt="{{project.title}}">
+      {% endif %}
       <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-          content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
+        <h5 class="card-title">{{project.title}}</h5>
+        <p class="card-text">{{ project.details|slice:":10" }}...</p>
+        <a href="{% url 'project_detail' project.id %}" class="btn btn-primary">more</a>
       </div>
     </div>
   </div>
-  <div class="col-md-2 mr-3">
-    <div class="card" style="width: 12rem;">
-      <img src="https://via.placeholder.com/140x100" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-          content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-2 mr-3">
-    <div class="card" style="width: 12rem;">
-      <img src="https://via.placeholder.com/140x100" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-          content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-2 mr-3">
-    <div class="card" style="width: 12rem;">
-      <img src="https://via.placeholder.com/140x100" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-          content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-2 mr-3">
-    <div class="card" style="width: 12rem;">
-      <img src="https://via.placeholder.com/140x100" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-          content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-  </div>
+  {% endfor %}
+
 </div>
 
 

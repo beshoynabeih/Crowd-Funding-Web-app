@@ -21,6 +21,7 @@ class Project(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     tags = TaggableManager()
+    is_featured = models.BooleanField(default=False)
 
 
     #for get this tags from template as strings 
@@ -109,11 +110,6 @@ class Rate(models.Model):
     class Meta:
         unique_together = (('user', 'project'),)
         index_together = (('user', 'project'),)
-
-
-class FeatureProject(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class ProjectReport(models.Model):

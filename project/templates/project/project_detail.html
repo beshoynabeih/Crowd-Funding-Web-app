@@ -12,7 +12,7 @@ Project {{ project.title }}
 {% block content %}
 <div class="col-12">
     <h2 class="">{{ project.title }}</h2>
-    <small class="text-muted">from {{ project.start_date }} to {{ project.end_date }} by <a href="#">{{ project.user.username }}</a></small>
+    <small class="text-muted">from {{ project.start_date }} to {{ project.end_date }} by <a href="#">{{ project.user.first_name }}</a></small>
 </div>
 <div class="col-8">
 
@@ -146,6 +146,7 @@ Project {{ project.title }}
       
 </div>
 <div class="col-4">
+    {% ifnotequal project.user user  %}
 <div>
     <h3>Fund for this project</h3>
     <form class="form" method="post" action="{% url 'project_fund' project.id %}">
@@ -156,6 +157,7 @@ Project {{ project.title }}
         <input type="submit" value="submit" class="btn btn-success btn-block" />
     </form>
 </div>
+    {% endifnotequal %}
 </div>
 
 <div id="report-toast" class="toast"  aria-live="polite" aria-atomic="true" data-delay="10000"
