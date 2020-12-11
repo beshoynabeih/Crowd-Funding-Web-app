@@ -23,43 +23,41 @@ class Project(models.Model):
     tags = TaggableManager()
     is_featured = models.BooleanField(default=False)
 
-
-    #for get this tags from template as strings 
+    # for get this tags from template as strings
     def get_tags(self):
-        tags=""
+        tags = ""
         for tag in self.tags.all():
-            tags+=f'{tag},'
+            tags += f'{tag},'
         return tags
 
     def get_absolute_url(self):
         return reverse('home')
-    
 
     # calc number of rating for project
     def number_of_rating(self):
-        rating=Rate.objects.filter(project=self)
+        rating = Rate.objects.filter(project=self)
         return len(rating)
-        
+
     # calc average rating
     def average_rating(self):
-        sum=0
-        rating=Rate.objects.filter(project=self)
+        sum = 0
+        rating = Rate.objects.filter(project=self)
         for rate in rating:
-            sum+=rate.rating
-        if len(rating) > 0:
+            sum += rate.rating
             return sum / len(rating)
         return 0
-    def donation_collect(self):
-        sum=0
-        donations=Denote.objects.filter(project=self)
-        for donation in donations:
-            sum+=donation.amount
-        return sum
 
+    def donation_collect(self):
+        sum = 0
+        donations = Denote.objects.filter(project=self)
+        for donation in donations:
+            sum += donation.amount
+        return sum
 
     class Meta:
         constraints = [
-            models.CheckConstraint(name='end_date_after_start_date', check=models.Q(end_date__gt=models.F('start_date')))
+            models.CheckConstraint(name='end_date_after_start_date',
+                                   check=models.Q(end_date__gt=models.F('start_date')))
         ]
 
 
@@ -124,7 +122,6 @@ class CommentReport(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     body = models.CharField(max_length=250)
     created_at = models.DateTimeField(auto_now_add=True)
-
 
 # class UserProfile(models.Model):
 #     user  = models.OneToOneField(User)

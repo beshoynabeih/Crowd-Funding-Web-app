@@ -6,7 +6,7 @@ from django.core.files.images import get_image_dimensions
 
 
 class ProjectForm(forms.ModelForm):
-    images = forms.ImageField(widget=forms.FileInput(attrs={'multiple': True}), required=False)
+    images = forms.ImageField(widget=forms.FileInput(attrs={'multiple': True}), required=True)
 
     def clean(self):
         start_date = self.cleaned_data.get("start_date")

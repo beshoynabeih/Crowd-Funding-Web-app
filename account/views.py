@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
-from .forms import UserProfile, DenoteForm, UserProfile ,UserForm
+from .forms import UserProfile, DenoteForm, UserProfile, UserForm
 from project.models import Project, Denote, Category, ProjectPicture
 from project.forms import ProjectForm
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404, Http404
@@ -12,6 +12,9 @@ from django.utils.encoding import force_text, force_bytes
 from .utils import generate_token
 from django.views import View
 from .models import MyUser
+from django.http import JsonResponse
+
+
 # Create your views here.
 
 
@@ -61,6 +64,13 @@ class ActiveAccountView(View):
 message = {}
 
 
+def get_total_donotations(user):  #
+    sum = 0
+    for donation in Denote.objects.filter(user=user):
+        sum += donation.amount
+    return sum
+
+
 def profile(request):
     user = get_object_or_404(MyUser, pk=request.user.id)
     projects = Project.objects.filter(user=user)
@@ -69,16 +79,29 @@ def profile(request):
     projectform = ProjectForm()
     donationform = DenoteForm()
     userform = UserForm()
-
+    projects_nums = projects.count()
+    last_project = 'No Projects'
+    if projects:
+        last_project = projects.order_by('-start_date').first().title  #
+    last_donation = '-------'
+    if donations.count():
+        last_donation = donations.order_by('-created_at').first().created_at  #
     context = {
         'user': user,
         'projects': projects,
         'donations': donations,
-        'category':category,
+        'category': category,
         'projectform': projectform,
         'donationform': donationform,
         'userform': userform,
-        'message': message
+        'message': message,
+        'user_activaties': {  #
+            'projects_nums': projects_nums,
+            'last_project': last_project,
+            'total_donation': get_total_donotations(user),
+            'last_donation': last_donation
+
+        },
     }
     # print(context)
     # return HttpResponse("asdasd")
@@ -97,7 +120,7 @@ def update_user_information(request):
             user.phone = form.cleaned_data.get('phone')
             user.date_of_birth = form.cleaned_data.get('date_of_birth')
             user.country = form.cleaned_data.get('country')
-            user.fb_account=form.cleaned_data.get('facebook_profile')
+            user.fb_account = form.cleaned_data.get('facebook_profile')
             user.save()
             message = {'status': "alert-success", 'message': "Update Successfully"}
         else:
@@ -106,19 +129,17 @@ def update_user_information(request):
     return redirect('profile_page')
 
 
-# def update_user_avatar(request,user_id):
-#     user=get_object_or_404(MyUser,pk=user_id)
-#     if request.method == 'POST':
-#         if request.FILES.getlist('avatar')[0]:
-#             user.avatar=request.FILES.getlist('avatar')[0]
-#             message={'status':1}
-#             print(message)
-#             return JsonResponse(message)
-#         else:
-#             message={'status':0}
-#             print(message)
-#             return JsonResponse(message)
-
+def update_user_avatar(request, user_id):
+    user = get_object_or_404(MyUser, pk=user_id)
+    if request.method == 'POST':
+        if request.FILES.get('avatar'):
+            user.avatar = request.FILES.get('avatar')
+            user.save()
+            message = {'status': 1}
+            return redirect('profile_page')
+        else:
+            message = {'status': 0}
+            return JsonResponse(message)
 
 
 def update_project(request, project_id):
@@ -134,7 +155,7 @@ def update_project(request, project_id):
             project.start_date = form.cleaned_data.get('start_date')
             project.end_date = form.cleaned_data.get('end_date')
             # get category object then update
-            project.category=Category.objects.filter(title=form.cleaned_data.get('category')).first()
+            project.category = Category.objects.filter(title=form.cleaned_data.get('category')).first()
             # if uplade new image , clear old images
             if request.FILES.getlist('images'):
                 ProjectPicture.objects.filter(project=project).delete()
@@ -150,14 +171,14 @@ def update_project(request, project_id):
     return redirect('profile_page')
 
 
-def delete_project(request,project_id):
+def delete_project(request, project_id):
     global message
-    project=Project.objects.filter(pk=project_id)[0]
+    project = Project.objects.filter(pk=project_id)[0]
     if request.method == 'POST':
-        donations=Denote.objects.filter(project=project_id)
-        total=0
+        donations = Denote.objects.filter(project=project_id)
+        total = 0
         for donation in donations:
-            total+=donation.amount
+            total += donation.amount
         if total < (float(project.total_target) * 0.25):
             project.delete()
             message = {'status': "alert-success", 'message': "Delete Successfully"}
@@ -167,7 +188,7 @@ def delete_project(request,project_id):
     return redirect('profile_page')
 
 
-def update_donation(request,donation_id):
+def update_donation(request, donation_id):
     global message
     donation = get_object_or_404(Denote, pk=donation_id)
     if request.method == "POST":
@@ -194,11 +215,11 @@ def delete_donation(request, donation_id):
 def delete_account(request):
     if request.method == "POST":
         global message
-        user=MyUser.objects.get(pk=request.user.id)
+        user = MyUser.objects.get(pk=request.user.id)
         if not user.check_password(request.POST['password']):
             message = {'status': "alert-danger", 'message': "Cant Delete Account Password Not Correct "}
             return redirect('profile_page')
         else:
-            logout(request) #logout
+            logout(request)  # logout
             user.delete()
     return redirect('home')

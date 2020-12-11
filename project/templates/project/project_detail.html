@@ -31,7 +31,7 @@ Project {{ project.title }}
       </ul>
       <div class="carousel-inner">
       {% for img in project.projectpicture_set.all %}
-        <div class="carousel-item {% if forloop.counter0 == 0 %}active {% endif %}">
+        <div class="carousel-item {% if forloop.counter0 == 0 %}active{% endif %}">
           <img src="{{ img.image.url }}" alt="{{ project.title }}">
         </div>
       {% endfor %}
@@ -50,19 +50,19 @@ Project {{ project.title }}
       <div class="col-4">
         <h4>project details</h4>
       </div>
-        {% if user.authenticated %}
+        {% if user.is_authenticated and project.user != user %}
       <div class="col-6">
         <!--just make it to handle average_rating from project to js file -->
-        <span id="average_rating" onclick="get_average_rating('{{ project.average_rating }}' , '{{ project.number_of_rating }}')"></span>
+        <span id="average_rating" onclick="get_average_rating('{{ project.average_rating }}' , '{{ project.number_of_rating }}')">get average</span>
         <div id="review" class="text-center mx-2"></div>
         
        </div>
        <div class="col-2 mt-2">
         <span style="font-weight: bold;font-size: larger;">(</span>
-        <span id="rating_num_value" style="font-weight: bold;font-size: larger;"></span>
+        <span id="rating_num_value" style="font-weight: bold;font-size: larger;">{{project.rate_set.first.rating}}</span>
         <span style="font-weight: bold;font-size: larger;">)</span>
        </div>
-{% endif %}
+    {% endif %}
     </div>
 
     <!--   -->

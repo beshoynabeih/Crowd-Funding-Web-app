@@ -20,24 +20,27 @@
     {% block left_side %}
 
         <div class="text-center">
+
             {% if user.avatar %}
-            <img style="width:150px !important; height:150px !important" src="{{user.avatar.url}}" class="avatar rounded-circle img-thumbnail" alt="avatar">
+            <img id="profile-picture" style="width:150px !important; height:150px !important" src="{{user.avatar.url}}" class="avatar rounded-circle img-thumbnail" alt="avatar">
 
             {% else %}
-            <img style="width:150px !important; height:150px !important" src="https://w7.pngwing.com/pngs/613/636/png-transparent-computer-icons-user-profile-male-avatar-avatar-heroes-logo-black-thumbnail.png" class="avatar rounded-circle img-thumbnail" alt="avatar">
+            <img id="profile-picture" style="width:150px !important; height:150px !important" src="https://w7.pngwing.com/pngs/613/636/png-transparent-computer-icons-user-profile-male-avatar-avatar-heroes-logo-black-thumbnail.png" class="avatar rounded-circle img-thumbnail" alt="avatar">
             {% endif %}
-            <!-- <h6>Change Photo</h6>
-             <input type="file" class="text-center center-block file-upload"> 
-            -->
+            <form method="POST" id="change_profile_picture_form" action="{% url 'update_user_avatar' user.id %}" enctype="multipart/form-data">
+             {% csrf_token %}
+             <input onchange="changeProfilePicture(event)" id="id_avatar" name="avatar" type="file" class="invisible">
+                <label for="id_avatar" class="btn btn-primary">Change Profile</label>
+            </form>
         </div>
     </hr><br>
-      <ul class="list-group">
-        <li class="list-group-item text-muted">Activity <i class="fas fa-tachometer-alt"></i></li>
-        <li class="list-group-item text-right"><span class="float-left"><strong>Total Projects</strong></span> 125</li>
-        <li class="list-group-item text-right"><span class="float-left"><strong>Total Donations</strong></span> 1000.0 EGP</li>
-        <li class="list-group-item text-right"><span class="float-left"><strong>Last Project</strong></span> 20-11-2020</li>
-        <li class="list-group-item text-right"><span class="float-left"><strong>Last Donations</strong></span> 500 EGP</li>
-      </ul>
+          <ul class="list-group">
+      <li class="list-group-item text-muted">Activity <i class="fas fa-tachometer-alt"></i></li>
+      <li class="list-group-item text-right"><span class="float-left"><strong>Total Projects</strong></span> {{ user_activaties.projects_nums }}</li>
+      <li class="list-group-item text-right"><span class="float-left"><strong>Total Donations</strong></span> {{ user_activaties.total_donation }} EGP</li>
+      <li class="list-group-item text-right"><span class="float-left"><strong>Last Project</strong></span> {{ user_activaties.last_project }}</li>
+      <li class="list-group-item text-right"><span class="float-left"><strong>Last Donations</strong></span> {{ user_activaties.last_donation }} EGP</li>
+    </ul>
 
       <div class="panel panel-default text-center mt-3">
         <div class="panel-heading">Social Media</div>
@@ -328,7 +331,8 @@
               </div>
             </div>
           </div>
-
+        {% empty %}
+        <div class="alert alert-info text-center">You have not projects yet</div>
       {% endfor %}
 
     {% endblock %}
@@ -361,10 +365,6 @@
             </span>
         </div>
     </div>
-
-
-
-
       <div class="modal" id="edit{{donation.id}}">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -431,7 +431,10 @@
         </div>
       </div>
 
-
+        {% empty %}
+            <div class="alert alert-info text-center">
+                You have not donations yet.
+            </div>
       {% endfor %}
 
 

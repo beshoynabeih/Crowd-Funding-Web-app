@@ -6,6 +6,8 @@ from django.contrib.auth.models import (
 
 from django.core.validators import RegexValidator
 from django.contrib import messages
+
+
 # Create your models here.
 
 
@@ -55,11 +57,11 @@ class MyUser(AbstractBaseUser):
     first_name = models.CharField(max_length=60, blank=False)
     last_name = models.CharField(max_length=60, blank=False)
     # mobile = models.CharField(max_length=11, blank=False)
-    phone_regex=RegexValidator(regex=r'^(01)[0-9]{9}',
-                               message="Phone number must be entered in the format: '01099999999'. Up to 11 digits allowed.")
-    phone=models.CharField(validators=[phone_regex],max_length=11,blank=True)
-    avatar=models.ImageField(upload_to='avatars/', blank=False)
-    date_of_birth=models.DateField(blank=True)
+    phone_regex = RegexValidator(regex=r'^(01)[0-9]{9}',
+                                 message="Phone number must be entered in the format: '01099999999'. Up to 11 digits allowed.")
+    phone = models.CharField(validators=[phone_regex], max_length=11, blank=True)
+
+    date_of_birth = models.DateField(blank=True)
 
     avatar = models.ImageField(upload_to='avatars/', blank=True)
     date_of_birth = models.DateField(blank=True)

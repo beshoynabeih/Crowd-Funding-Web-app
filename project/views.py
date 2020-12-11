@@ -42,8 +42,7 @@ def create_project(request):
         if form.is_valid():
             project = form.save(commit=False)
             project.user = request.user
-            # project.user = User.objects.first()
-            project.slug = slugify(project.title)
+            # project.slug = slugify(project.title)
             project.save()
             form.save_m2m()
             for image in request.FILES.getlist('images'):
@@ -116,7 +115,8 @@ def fund_project(request, project_id):
                     return redirect('project_detail', project_id)
             else:
                 messages.success(request,
-                                 'the project has been collected all total target or your amount is much for the project')
+                                 'the project has been collected all total '
+                                 'target or your amount is much for the project')
                 return redirect('project_detail', project_id)
 
 

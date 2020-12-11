@@ -19,7 +19,6 @@ $("#project-report-btn").click(function(){
             }
         }
     })
-
 })
 
 $('#commentReportModal').on('show.bs.modal', function (event) {
@@ -49,6 +48,20 @@ $('#commentReportModal').on('show.bs.modal', function (event) {
     })
 })
 
+function changeProfilePicture(event){
+    if(event.target.files && event.target.files[0].type.includes('image') ){
+      let reader = new FileReader()
+      reader.readAsDataURL(event.target.files[0])
+      reader.onload = (event)=>{
+        this.url = event.target.result
+        $('#profile-picture').attr('src', this.url)
+        $('#change_profile_picture_form').submit()
+      }
+    }
+    else
+      console.log('File does not supported')
+}
+
  var average_rating;
  var number_of_rating;
  var first_load=true
@@ -56,7 +69,7 @@ $(function(){
    
    
     $('#average_rating').click()
-    $('#rating_num_value').text(number_of_rating)
+//    $('#rating_num_value').text(number_of_rating)
 
     $("[data-rating-stars]").each(function () {
         // Get all data-rating attributes
