@@ -12,26 +12,26 @@ from django.contrib import messages
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, first_name, last_name, mobile, password=None):
+    def create_user(self, email, first_name, last_name, phone, password=None):
         """
         Creates and saves a User with the given email, date of
         birth and password.
         """
-        if not email or not last_name or not first_name or not mobile:
+        if not email or not last_name or not first_name or not phone:
             raise ValueError('Users must have an email address')
 
         user = self.model(
             email=self.normalize_email(email),
             first_name=first_name,
             last_name=last_name,
-            mobile=mobile
+            phone=phone
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, first_name, last_name, mobile, password=None):
+    def create_superuser(self, email, first_name, last_name, phone, password=None):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
@@ -41,7 +41,7 @@ class MyUserManager(BaseUserManager):
             password=password,
             first_name=first_name,
             last_name=last_name,
-            mobile=mobile
+            phone=phone
         )
         user.is_admin = True
         user.save(using=self._db)
@@ -76,7 +76,7 @@ class MyUser(AbstractBaseUser):
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'mobile']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone']
 
     def __str__(self):
         return self.email

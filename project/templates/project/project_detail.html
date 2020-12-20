@@ -17,7 +17,7 @@ Project {{ project.title }}
 <div class="col-8">
 
     {% for tag in project.tags.all %}
-        <a class="badge badge-{% cycle 'primary' 'success' %} p-2" href="#">{{ tag.name }}</a>
+        <a class="badge badge-{% cycle 'primary' 'success' %} p-2" href="{% url 'projects_by_tag' tag.id %}">{{ tag.name }}</a>
     {% endfor %}
 
     <p>project category <a href="#">{{ project.category.title }}</a></p>
@@ -160,6 +160,9 @@ Project {{ project.title }}
     {% endifnotequal %}
 </div>
 
+<div class="col-12 mt-3">
+    <h3>Related Projects</h3>
+</div>
 <div id="report-toast" class="toast"  aria-live="polite" aria-atomic="true" data-delay="10000"
     style="position: fixed; top: 100px; right: 10px;">
     <div class="toast-header">

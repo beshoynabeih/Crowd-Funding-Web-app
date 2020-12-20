@@ -31,6 +31,8 @@ urlpatterns = [
     path('project_rate/<int:project_id>/<int:rating_val>', views.rating_project, name="rating_project"),
     path('projects/', views.all_projects, name='projects'),
     path('projects/category/<category_id>', views.projects_by_category, name='projects_by_category'),
+    path('projects/tag/<int:tag_id>', views.projects_by_tag, name='projects_by_tag'),
+    path('projects/search/', views.projects_search, name='projects_search'),
 ]
 
 

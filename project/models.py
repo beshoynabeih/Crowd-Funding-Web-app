@@ -60,6 +60,8 @@ class Project(models.Model):
                                    check=models.Q(end_date__gt=models.F('start_date')))
         ]
 
+    def __str__(self):
+        return self.title
 
 class ProjectPicture(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)

@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, UpdateView, ListView, DetailView
@@ -154,3 +154,14 @@ def all_projects(request):
 def projects_by_category(request, category_id):
     projects = Project.objects.filter(category_id=category_id)
     return render(request, 'project/projects.html', {'projects': projects})
+
+def projects_by_tag(request, tag_id):
+    projects = Project.objects.filter(tags__id__in=[tag_id])
+    return render(request, 'project/projects.html', {'projects': projects})
+
+def projects_search(request):
+    q = request.GET.get('q')
+
+    projects = Project.objects.filter(Q(title__icontains=q) | Q(details__icontains=q))
+    return render(request, 'project/projects.html', {'projects': projects})
+
