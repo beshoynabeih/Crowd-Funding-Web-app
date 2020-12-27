@@ -22,7 +22,8 @@ class Project(models.Model):
     end_date = models.DateField()
     tags = TaggableManager()
     is_featured = models.BooleanField(default=False)
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     # for get this tags from template as strings
     def get_tags(self):
         tags = ""
@@ -35,8 +36,8 @@ class Project(models.Model):
 
     # calc number of rating for project
     def number_of_rating(self):
-        rating = Rate.objects.filter(project=self)
-        return len(rating)
+        # rating = Rate.objects.filter(project=self)
+        return Rate.objects.filter(project=self).count()
 
     # calc average rating
     def average_rating(self):
@@ -44,6 +45,7 @@ class Project(models.Model):
         rating = Rate.objects.filter(project=self)
         for rate in rating:
             sum += rate.rating
+        if len(rating):
             return sum / len(rating)
         return 0
 
@@ -62,6 +64,7 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class ProjectPicture(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -98,11 +101,11 @@ class Rate(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     rating = models.IntegerField(choices=[
-        ('1', '1'),
-        ('2', '2'),
-        ('3', '3'),
-        ('4', '4'),
-        ('5', '5'),
+        (1, '1'),
+        (2, '2'),
+        (3, '3'),
+        (4, '4'),
+        (5, '5'),
     ])
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 
-from django.db.models import Sum, Q
+from django.db.models import Sum, Q, Avg
+from django.db.models.functions import Coalesce
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, UpdateView, ListView, DetailView
@@ -20,16 +21,17 @@ from django.conf import settings
 from django.contrib.auth import login
 from django.core.mail import send_mail
 
-
 # Create your views here.
 
 
 def index(request):
     latest_projects = Project.objects.all().order_by('-start_date')[:5]
     latest_featured_projects = Project.objects.filter(is_featured=True).order_by('-start_date')[:5]
+    top_rated_projects = Project.objects.annotate(rate_avg=Coalesce(Avg('rate__rating'), 0)).order_by('-rate_avg')[:3]
     context = {
         'latest_projects': latest_projects,
-        'latest_featured_projects': latest_featured_projects
+        'latest_featured_projects': latest_featured_projects,
+        'top_rated_projects': top_rated_projects
     }
     return render(request, 'project/index.html', context)
 
@@ -55,10 +57,12 @@ def create_project(request):
 
 def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
+    realted_projects = Project.objects.filter(tags__in=project.tags.all()).exclude(id=project.id).order_by('-created_at')[:4]
     context = {
         "project": project,
         "project_target_collected": Denote.objects.filter(project=project).aggregate(Sum('amount'))[
-                                        'amount__sum'] or 0.0
+                                        'amount__sum'] or 0.0,
+        'realted_projects': realted_projects
     }
     return render(request, 'project/project_detail.html', context)
 
@@ -80,14 +84,12 @@ def post_comment(request, project_id):
         if Project.objects.filter(pk=project_id).exists():
             comment = Comment.objects.create(body=request.POST.get('comment-body'), user=request.user,
                                              project_id=project_id)
-            return redirect('project_detail', project_id)
     return redirect('project_detail', project_id)
 
 
 def comment_report(request, comment_id):
     if Comment.objects.filter(pk=comment_id).exists():
         rec = CommentReport.objects.create(body=request.GET.get('body'), user=request.user, comment_id=comment_id)
-    if rec:
         return JsonResponse({"return": True})
     return JsonResponse({"return": False})
 

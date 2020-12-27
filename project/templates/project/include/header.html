@@ -27,8 +27,14 @@
                     <a class="nav-link" href="{% url 'create_project' %}">Create Project</a>
                 </li>
             </ul>
+
+            <form method="GET" action="{% url 'projects_search' %}" class="form-inline my-2 my-lg-0">
+                <input name="q" class="form-control mr-sm-2" type="search" placeholder="search by title or details" aria-label="Search">
+                <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+            </form>
+
             {%if user.is_authenticated%}
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ">
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ user.first_name }}
@@ -42,13 +48,9 @@
                 </li>
               </ul>
             {% else %}
-            <a href="{% url 'login' %}" class="btn btn-outline-secondary">login</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-secondary ml-1">login</a>
             <a class="btn btn-outline-primary mx-1 my-2 my-sm-0" href="{% url 'signup' %}"  >Sign up</a>
             {% endif %}
-            <form method="GET" action="{% url 'projects_search' %}" class="form-inline my-2 my-lg-0">
-                <input name="q" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
-            </form>
 
         </div>
     </nav>
